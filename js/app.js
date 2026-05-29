@@ -10,16 +10,16 @@ const LS_LIMIT        = 'budgetviz_limit';
 const LS_THEME        = 'budgetviz_theme';
 
 const DEFAULT_CATEGORIES = [
-  { name: 'Food',      emoji: '🍔' },
-  { name: 'Transport', emoji: '🚗' },
-  { name: 'Fun',       emoji: '🎉' },
+  { name: 'Food',      emoji: '' },
+  { name: 'Transport', emoji: '' },
+  { name: 'Fun',       emoji: '' },
 ];
 
-// Chart.js palette — cycles if more categories added
+// Chart.js palette — pastel purple tones, cycles if more categories added
 const CHART_COLORS = [
-  '#6366f1', '#f59e0b', '#22c55e', '#ef4444',
-  '#3b82f6', '#ec4899', '#14b8a6', '#f97316',
-  '#8b5cf6', '#06b6d4', '#84cc16', '#e11d48',
+  '#b39ddb', '#ce93d8', '#f48fb1', '#80cbc4',
+  '#90caf9', '#ffcc80', '#a5d6a7', '#ef9a9a',
+  '#80deea', '#ffe082', '#bcaaa4', '#c5e1a5',
 ];
 
 // ── State ────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ function saveLimit() {
 function applyTheme(theme) {
   body.classList.toggle('dark', theme === 'dark');
   body.classList.toggle('light', theme !== 'dark');
-  toggleModeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  toggleModeBtn.textContent = theme === 'dark' ? 'Light' : 'Dark';
   localStorage.setItem(LS_THEME, theme);
 }
 
@@ -153,7 +153,7 @@ function populateCategorySelect() {
   categories.forEach(cat => {
     const opt = document.createElement('option');
     opt.value = cat.name;
-    opt.textContent = `${cat.emoji} ${cat.name}`;
+    opt.textContent = cat.name;
     categorySelect.appendChild(opt);
   });
 }
@@ -177,10 +177,10 @@ function updateBalance() {
     limitBar.classList.remove('warn', 'over');
     if (total > spendingLimit) {
       limitBar.classList.add('over');
-      limitWarning.textContent = `⚠️ Over limit by ${formatRp(total - spendingLimit)}`;
+      limitWarning.textContent = `Over limit by ${formatRp(total - spendingLimit)}`;
     } else if (pct >= 80) {
       limitBar.classList.add('warn');
-      limitWarning.textContent = `⚠️ ${Math.round(pct)}% of limit used`;
+      limitWarning.textContent = `${Math.round(pct)}% of limit used`;
     } else {
       limitWarning.textContent = '';
     }
@@ -214,7 +214,7 @@ function updateMonthlySummary() {
     catTotals[tx.category] = (catTotals[tx.category] || 0) + tx.amount;
   });
   const top = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
-  monthTop.textContent = `${getCategoryEmoji(top[0])} ${top[0]}`;
+  monthTop.textContent = top[0];
 }
 
 prevMonthBtn.addEventListener('click', () => {
@@ -272,7 +272,7 @@ function renderTransactions() {
       : '';
 
     li.innerHTML = `
-      <span class="tx-icon">${getCategoryEmoji(tx.category)}</span>
+      <span class="tx-icon">${escapeHtml(tx.category.charAt(0))}</span>
       <div class="tx-info">
         <div class="tx-name">${escapeHtml(tx.name)}</div>
         <div class="tx-meta">${escapeHtml(tx.category)}${dateStr ? ' · ' + dateStr : ''}</div>
@@ -327,7 +327,7 @@ function renderChart() {
 
   const colors = labels.map((_, i) => getChartColor(i));
   const isDark = body.classList.contains('dark');
-  const textColor = isDark ? '#e8eaf6' : '#1a1d2e';
+  const textColor = isDark ? '#e8e0f5' : '#2d2540';
 
   if (pieChart) {
     pieChart.data.labels = labels;
@@ -346,7 +346,7 @@ function renderChart() {
         data,
         backgroundColor: colors,
         borderWidth: 2,
-        borderColor: isDark ? '#1a1d2e' : '#ffffff',
+        borderColor: isDark ? '#231d35' : '#ffffff',
         hoverOffset: 8,
       }],
     },
@@ -463,7 +463,7 @@ catModal.addEventListener('click', e => {
 saveCatBtn.addEventListener('click', () => {
   catError.textContent = '';
   const name  = catNameInput.value.trim();
-  const emoji = catEmojiInput.value.trim() || '📦';
+  const emoji = catEmojiInput.value.trim() || cat.name.charAt(0);
 
   if (!name) { catError.textContent = 'Category name is required.'; return; }
   if (categories.find(c => c.name.toLowerCase() === name.toLowerCase())) {

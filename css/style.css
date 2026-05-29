@@ -2,22 +2,22 @@
    CSS CUSTOM PROPERTIES — Light & Dark themes
    ============================================================ */
 :root {
-  --bg: #f4f6fb;
+  --bg: #f5f0fb;
   --surface: #ffffff;
-  --surface-alt: #f0f2f8;
-  --border: #e2e6f0;
-  --text: #1a1d2e;
-  --text-muted: #6b7280;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --primary-light: #eef2ff;
-  --danger: #ef4444;
-  --danger-light: #fef2f2;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --warning-light: #fffbeb;
-  --shadow: 0 2px 12px rgba(99, 102, 241, 0.08);
-  --shadow-lg: 0 8px 32px rgba(99, 102, 241, 0.12);
+  --surface-alt: #ede8f7;
+  --border: #ddd5f0;
+  --text: #2d2540;
+  --text-muted: #8b7faa;
+  --primary: #b39ddb;
+  --primary-hover: #9575cd;
+  --primary-light: #ede7f6;
+  --danger: #e57373;
+  --danger-light: #fce8e8;
+  --success: #81c784;
+  --warning: #ffb74d;
+  --warning-light: #fff3e0;
+  --shadow: 0 2px 12px rgba(149, 117, 205, 0.10);
+  --shadow-lg: 0 8px 32px rgba(149, 117, 205, 0.16);
   --radius: 14px;
   --radius-sm: 8px;
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -25,18 +25,18 @@
 }
 
 body.dark {
-  --bg: #0f1117;
-  --surface: #1a1d2e;
-  --surface-alt: #252840;
-  --border: #2e3250;
-  --text: #e8eaf6;
-  --text-muted: #9ca3af;
-  --primary: #818cf8;
-  --primary-hover: #6366f1;
-  --primary-light: #1e2040;
-  --danger: #f87171;
-  --danger-light: #2d1515;
-  --warning-light: #2d2510;
+  --bg: #1a1525;
+  --surface: #231d35;
+  --surface-alt: #2e2645;
+  --border: #3d3360;
+  --text: #e8e0f5;
+  --text-muted: #9e8fc0;
+  --primary: #ce93d8;
+  --primary-hover: #ba68c8;
+  --primary-light: #2e2045;
+  --danger: #ef9a9a;
+  --danger-light: #3a1f1f;
+  --warning-light: #332510;
   --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
@@ -249,6 +249,13 @@ body {
   color: var(--text-muted);
 }
 
+.month-nav .btn-icon {
+  font-size: 1rem;
+  padding: 3px 8px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .monthly-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -426,18 +433,24 @@ body {
 
 .btn-icon {
   background: none;
-  border: none;
+  border: 1.5px solid var(--border);
   cursor: pointer;
-  font-size: 1.2rem;
-  padding: 6px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
   border-radius: var(--radius-sm);
-  transition: background var(--transition);
-  color: var(--text);
-  line-height: 1;
+  transition: background var(--transition), color var(--transition);
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .btn-icon:hover {
-  background: var(--surface-alt);
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 /* ============================================================
@@ -491,10 +504,19 @@ body {
 }
 
 .tx-icon {
-  font-size: 1.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
   flex-shrink: 0;
-  width: 36px;
-  text-align: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .tx-info {
