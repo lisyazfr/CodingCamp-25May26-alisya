@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget & Expense Visualizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+  <body class="light">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <span class="logo">💰 BudgetViz</span>
+      </div>
+      <div class="header-right">
+        <button id="toggleMode" class="btn-icon" title="Toggle dark/light mode">🌙</button>
+      </div>
+    </header>
+
+    <main class="container">
+
+      <!-- Balance + Limit Banner -->
+      <section class="balance-section">
+        <div class="balance-card">
+          <p class="balance-label">Total Spent</p>
+          <h1 class="balance-amount" id="totalBalance">Rp 0</h1>
+        </div>
+        <div class="limit-card">
+          <p class="balance-label">Spending Limit</p>
+          <div class="limit-row">
+            <span id="limitDisplay">Not set</span>
+            <button class="btn-sm" id="openLimitModal">Set Limit</button>
+          </div>
+          <div class="limit-bar-wrap" id="limitBarWrap" style="display:none">
+            <div class="limit-bar" id="limitBar"></div>
+          </div>
+          <p class="limit-warning" id="limitWarning"></p>
+        </div>
+      </section>
+
+      <!-- Monthly Summary Toggle -->
+      <section class="monthly-section">
+        <div class="section-header">
+          <h2>Monthly Summary</h2>
+          <div class="month-nav">
+            <button class="btn-icon" id="prevMonth">&#8249;</button>
+            <span id="currentMonthLabel"></span>
+            <button class="btn-icon" id="nextMonth">&#8250;</button>
+          </div>
+        </div>
+        <div class="monthly-stats" id="monthlyStats">
+          <div class="stat-box"><span class="stat-label">Transactions</span><span class="stat-val" id="monthCount">0</span></div>
+          <div class="stat-box"><span class="stat-label">Total Spent</span><span class="stat-val" id="monthTotal">Rp 0</span></div>
+          <div class="stat-box"><span class="stat-label">Top Category</span><span class="stat-val" id="monthTop">—</span></div>
+        </div>
+      </section>
+
+      <!-- Main Grid -->
+      <div class="main-grid">
+
+        <!-- Left: Form + List -->
+        <div class="left-panel">
+
+          <!-- Add Transaction Form -->
+          <section class="card">
+            <h2>Add Transaction</h2>
+            <form id="transactionForm">
+              <div class="form-group">
+                <label for="itemName">Item Name</label>
+                <input type="text" id="itemName" placeholder="e.g. Lunch, Grab, Netflix" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label for="amount">Amount (Rp)</label>
+                <input type="number" id="amount" placeholder="e.g. 50000" min="1" />
+              </div>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <div class="category-row">
+                  <select id="category">
+                    <option value="">Select category</option>
+                    <option value="Food">🍔 Food</option>
+                    <option value="Transport">🚗 Transport</option>
+                    <option value="Fun">🎉 Fun</option>
+                  </select>
+                  <button type="button" class="btn-sm" id="openCatModal">+ New</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="txDate">Date</label>
+                <input type="date" id="txDate" />
+              </div>
+              <button type="submit" class="btn-primary">Add Transaction</button>
+              <p class="form-error" id="formError"></p>
+            </form>
+          </section>
+
+          <!-- Transaction List -->
+          <section class="card">
+            <div class="section-header">
+              <h2>Transactions</h2>
+              <div class="sort-row">
+                <label for="sortBy">Sort:</label>
+                <select id="sortBy">
+                  <option value="date-desc">Newest</option>
+                  <option value="date-asc">Oldest</option>
+                  <option value="amount-desc">Highest Amount</option>
+                  <option value="amount-asc">Lowest Amount</option>
+                  <option value="category-asc">Category A–Z</option>
+                </select>
+              </div>
+            </div>
+            <ul class="transaction-list" id="transactionList">
+              <li class="empty-state" id="emptyState">No transactions yet. Add one above!</li>
+            </ul>
+          </section>
+
+        </div>
+
+        <!-- Right: Chart -->
+        <div class="right-panel">
+          <section class="card chart-card">
+            <h2>Spending by Category</h2>
+            <div class="chart-wrap">
+              <canvas id="pieChart"></canvas>
+            </div>
+            <p class="chart-empty" id="chartEmpty">Add transactions to see the chart.</p>
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Set Limit Modal -->
+    <div class="modal-overlay" id="limitModal">
+      <div class="modal">
+        <h3>Set Spending Limit</h3>
+        <div class="form-group">
+          <label for="limitInput">Monthly Limit (Rp)</label>
+          <input type="number" id="limitInput" placeholder="e.g. 1000000" min="1" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn-primary" id="saveLimit">Save</button>
+          <button class="btn-ghost" id="closeLimitModal">Cancel</button>
+          <button class="btn-danger" id="removeLimit">Remove Limit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal-overlay" id="catModal">
+      <div class="modal">
+        <h3>Add Custom Category</h3>
+        <div class="form-group">
+          <label for="catEmoji">Emoji (optional)</label>
+          <input type="text" id="catEmoji" placeholder="e.g. 🏠" maxlength="2" />
+        </div>
+        <div class="form-group">
+          <label for="catName">Category Name</label>
+          <input type="text" id="catName" placeholder="e.g. Housing" />
+        </div>
+        <p class="form-error" id="catError"></p>
+        <div class="modal-actions">
+          <button class="btn-primary" id="saveCat">Add Category</button>
+          <button class="btn-ghost" id="closeCatModal">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
