@@ -1,7 +1,3 @@
-/* ============================================================
-   BudgetViz — Vanilla JS App
-   All data stored in localStorage
-   ============================================================ */
 
 // ── Constants ────────────────────────────────────────────────
 const LS_TRANSACTIONS = 'budgetviz_transactions';
@@ -15,7 +11,6 @@ const DEFAULT_CATEGORIES = [
   { name: 'Fun',       emoji: '' },
 ];
 
-// Chart.js palette — pastel purple tones, cycles if more categories added
 const CHART_COLORS = [
   '#b39ddb', '#ce93d8', '#f48fb1', '#80cbc4',
   '#90caf9', '#ffcc80', '#a5d6a7', '#ef9a9a',
@@ -27,8 +22,6 @@ let transactions = [];
 let categories   = [];
 let spendingLimit = null;
 let pieChart      = null;
-
-// Viewing month: { year, month } (0-indexed month)
 let viewMonth = { year: new Date().getFullYear(), month: new Date().getMonth() };
 
 // ── DOM refs ─────────────────────────────────────────────────
@@ -208,7 +201,6 @@ function updateMonthlySummary() {
     return;
   }
 
-  // Find top category by total spend
   const catTotals = {};
   filtered.forEach(tx => {
     catTotals[tx.category] = (catTotals[tx.category] || 0) + tx.amount;
@@ -248,7 +240,6 @@ function renderTransactions() {
   const sorted = getSortedTransactions();
   const total  = calcTotal(transactions);
 
-  // Clear existing items (keep emptyState)
   Array.from(txList.querySelectorAll('.tx-item')).forEach(el => el.remove());
 
   if (sorted.length === 0) {
@@ -262,7 +253,6 @@ function renderTransactions() {
     li.className = 'tx-item';
     li.dataset.id = tx.id;
 
-    // Highlight if this single transaction is over limit (or total is over)
     if (spendingLimit && total > spendingLimit) {
       li.classList.add('over-limit');
     }
@@ -292,7 +282,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// Delete via event delegation
 txList.addEventListener('click', e => {
   const btn = e.target.closest('.tx-delete');
   if (!btn) return;
@@ -306,7 +295,6 @@ sortBySelect.addEventListener('change', renderTransactions);
 
 // ── Chart ─────────────────────────────────────────────────────
 function renderChart() {
-  // Aggregate by category
   const catTotals = {};
   transactions.forEach(tx => {
     catTotals[tx.category] = (catTotals[tx.category] || 0) + tx.amount;
@@ -380,7 +368,6 @@ function renderChart() {
 }
 
 // ── Add Transaction ───────────────────────────────────────────
-// Set today's date as default
 function setDefaultDate() {
   const today = new Date().toISOString().split('T')[0];
   txDateInput.value = today;
